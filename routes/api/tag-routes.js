@@ -1,17 +1,23 @@
-const router = require("express").Router();
-const { Tag, Product, ProductTag } = require("../../models");
+const router = require('express').Router();
+const { Tag, Product, ProductTag } = require('../../models');
 
 // The `/api/tags` endpoint
 
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   // find all tags
-  console.log("======================");
+  console.log('======================');
   Tag.findAll({
-    attributes: ["id", "tag_name"],
+    // attributes: ["id", "tag_name"],
     include: [
       {
         model: Product,
-        attributes: ["id", "product_name", "price", "stock", "category_id"],
+        attributes: [
+          'product_id',
+          'product_name',
+          'price',
+          'stock',
+          'category_id',
+        ],
       },
     ],
   })
@@ -23,16 +29,22 @@ router.get("/", (req, res) => {
   // be sure to include its associated Product data
 });
 
-router.get("/:id", (req, res) => {
+router.get('/:id', (req, res) => {
   // find a single tag by its `id`
-  console.log("======================");
+  console.log('======================');
   Tag.findOne({
     where: { id: req.params.id },
-    attributes: ["id", "Tag_name"],
+    // attributes: ["id", "Tag_name"],
     include: [
       {
         model: Product,
-        attributes: ["id", "product_name", "price", "stock", "category_id"],
+        attributes: [
+          'product_id',
+          'product_name',
+          'price',
+          'stock',
+          'category_id',
+        ],
       },
     ],
   })
@@ -44,7 +56,7 @@ router.get("/:id", (req, res) => {
   // be sure to include its associated Product data
 });
 
-router.post("/", (req, res) => {
+router.post('/', (req, res) => {
   // create a new tag
   Tag.create({
     tag_name: req.body.tag_name,
@@ -56,24 +68,19 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put('/:id', (req, res) => {
   // update a tag's name by its `id` value
-  Tag.update(
-    {
-      tag_name: req.body.tag_name,
+  Tag.update(req.body, {
+    where: {
+      id: req.params.id,
     },
-    {
-      where: {
-        id: req.params.id,
-      },
-    }
-  )
-    .then((tagData) => {
-      if (!tagData) {
-        res.status(404).json({ message: "No Tag found with that ID." });
+  })
+    .then((dbTagData) => {
+      if (!dbTagData) {
+        res.status(404).json({ message: 'No tag found with this id' });
         return;
       }
-      res.json(tagData);
+      res.json(dbTagData);
     })
     .catch((err) => {
       console.log(err);
@@ -81,18 +88,18 @@ router.put("/:id", (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete('/:id', (req, res) => {
   Tag.destroy({
     where: {
       id: req.params.id,
     },
   })
-    .then((tagData) => {
-      if (!tagData) {
-        res.status(404).json({ message: "No Tag found by that ID." });
+    .then((dbTagData) => {
+      if (!dbTagData) {
+        res.status(404).json({ message: 'No Tag found by that ID.' });
         return;
       }
-      res.json(tagData);
+      res.json(dbTagData);
     })
     .catch((err) => {
       console.log(err);
