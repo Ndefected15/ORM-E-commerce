@@ -33,7 +33,7 @@ router.get('/:id', (req, res) => {
   // find a single tag by its `id`
   console.log('======================');
   Tag.findOne({
-    where: { id: req.params.id },
+    where: { tag_id: req.params.id },
     // attributes: ["id", "Tag_name"],
     include: [
       {
@@ -72,7 +72,7 @@ router.put('/:id', (req, res) => {
   // update a tag's name by its `id` value
   Tag.update(req.body, {
     where: {
-      id: req.params.id,
+      tag_id: req.params.id,
     },
   })
     .then((dbTagData) => {
@@ -91,7 +91,7 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   Tag.destroy({
     where: {
-      id: req.params.id,
+      tag_id: req.params.id,
     },
   })
     .then((dbTagData) => {
